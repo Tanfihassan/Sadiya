@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AdExtra Ads Reward System</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      text-align: center;
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      width: 340px;
+      border: 1px solid #333;
+    }
+    .container h1 {
+      font-size: 20px;
+      color: #FFD700;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+    .stats p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #FFD700;
+    }
+    .progress-circle {
+      width: 80px;
+      height: 80px;
+      border: 4px solid #FFD700;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px auto;
+    }
+    .progress-circle span {
+      font-size: 18px;
+      font-weight: bold;
+      color: #FFD700;
+    }
+    .buttons button {
+      width: 90%;
+      margin: 5px 0;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    #watch-ad-btn {
+      background: #FFD700;
+      color: #000;
+    }
+    #ad-box {
+      display: none; /* শুরুর সময় লুকানো থাকবে */
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AdExtra Ads</h1>
+
+    <div class="stats">
+      <p>Watched Ads: <span id="watched-ads">0</span></p>
+      <p>Earned Points: <span id="earned-points">0.00</span></p>
+    </div>
+
+    <div class="progress-circle">
+      <span id="ads-progress">0%</span>
+    </div>
+
+    <div class="buttons">
+      <button id="watch-ad-btn" onclick="watchAd()">Watch Ad</button>
+    </div>
+
+    <!-- AdExtra container -->
+    <div id="ad-box">
+      <div id="d70fbc47938294fce0c2962896a8537b639520bd"></div>
+    </div>
+  </div>
+
+  <!-- AdExtra script -->
+  <script async src="https://partner.adextra.io/jt/d70fbc47938294fce0c2962896a8537b639520bd.js"></script>
+
+  <script>
+    let watchedAdsCount = 0;
+    let earnedPoints = 0.00;
+
+    if (localStorage.getItem('watchedAdsCount')) {
+      watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount'));
+      earnedPoints = parseFloat(localStorage.getItem('earnedPoints'));
+      updateStats();
+      updateProgressCircle();
+    }
+
+    function watchAd() {
+      // container দেখাও
+      document.getElementById("ad-box").style.display = "block";
+
+      // এখানে সরাসরি পয়েন্ট না বাড়িয়ে,
+      // কিছু সময় পরে (ধরা যাক 10 সেকেন্ড) awardPoints দেওয়া হবে
+      setTimeout(() => {
+        awardPoints();
+        // বিজ্ঞাপন লুকিয়ে ফেলতে চাইলে:
+        document.getElementById("ad-box").style.display = "none";
+      }, 10000);
+    }
+
+    function awardPoints() {
+      watchedAdsCount++;
+      earnedPoints += 0.50;
+      updateStats();
+      updateProgressCircle();
+    }
+
+    function updateStats() {
+      document.getElementById('watched-ads').textContent = watchedAdsCount;
+      document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+      localStorage.setItem('watchedAdsCount', watchedAdsCount);
+      localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
+    }
+
+    function updateProgressCircle() {
+      const percentage = Math.min((watchedAdsCount / 10) * 100, 100);
+      document.getElementById('ads-progress').textContent = `${Math.floor(percentage)}%`;
+    }
+  </script>
+</body>
+</html>
